@@ -3,6 +3,7 @@ package kpardyka.controller;
 import kpardyka.exchangeRates.NBPApi;
 import kpardyka.model.Country;
 import kpardyka.repository.CountryRepository;
+import kpardyka.service.SalaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,9 @@ public class SalaryController {
     private NBPApi NBPApi;
 
     @Autowired
+    private SalaryService salaryService;
+
+    @Autowired
     private CountryRepository countryRepository;
 
     @GetMapping("/")
@@ -25,11 +29,13 @@ public class SalaryController {
     }
 
     @RequestMapping(value = "/country/{id}/{dailySalary}", method = RequestMethod.GET)
-    public ResponseEntity getCountry(@PathVariable Long id, @PathVariable Double dailySalary) {
+    public ResponseEntity calculateSalary(@PathVariable Long id, @PathVariable Double dailySalary) {
         Optional<Country> country = countryRepository.findById(id);
         if (country.isPresent()) {
             String code = country.get().getCode();
-            return ResponseEntity.ok(NBPApi.getExchangeRate(code));
+            double exchangeRate = NBPApi.getExchangeRate(code);
+            double netMonthSalary = salaryService.calculateNeSalaryInPLN(country.get(), exchangeRate, dailySalary);
+            return ResponseEntity.ok(netMonthSalary);
         } else {
             return ResponseEntity.notFound().build();
         }
