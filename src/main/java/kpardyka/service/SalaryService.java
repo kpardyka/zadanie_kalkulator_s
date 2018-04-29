@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-import static java.math.BigDecimal.ROUND_HALF_UP;
-import static java.math.BigDecimal.valueOf;
+import static java.math.BigDecimal.*;
 
 @Service
 public class SalaryService {
@@ -18,7 +17,7 @@ public class SalaryService {
         BigDecimal grossMonthSalary = calculateGrossMonthSalary(dailySalary);
         BigDecimal netMonthSalary = calculateNetMonthSalary(grossMonthSalary, country);
         BigDecimal netMonthSalaryInPLN = netMonthSalary.multiply(exchangeRate);
-        return netMonthSalaryInPLN.setScale(2, ROUND_HALF_UP);
+        return roundToTwoDecimalPlaces(netMonthSalaryInPLN);
     }
 
     private BigDecimal calculateNetMonthSalary(BigDecimal grossMonthSalary, Country country) {
@@ -26,6 +25,9 @@ public class SalaryService {
         BigDecimal costOfGettingIncome = valueOf(country.getCostOfGettingIncome());
         BigDecimal grossSalaryPercent = valueOf(100 + tax);
         BigDecimal grossSalaryWithoutCostOfGettingIncome = grossMonthSalary.subtract(costOfGettingIncome);
+        if (grossSalaryWithoutCostOfGettingIncome.compareTo(ZERO) < 0){
+            return roundToTwoDecimalPlaces(grossSalaryWithoutCostOfGettingIncome);
+        }
         BigDecimal netSalary = calculateGrossSalaryToNetSalary(grossSalaryPercent, grossSalaryWithoutCostOfGettingIncome);
         return netSalary;
     }
@@ -36,5 +38,9 @@ public class SalaryService {
 
     private BigDecimal calculateGrossMonthSalary(BigDecimal dailySalary) {
         return dailySalary.multiply(valueOf(WORK_DAYS_NUMBER));
+    }
+
+    private BigDecimal roundToTwoDecimalPlaces(BigDecimal value) {
+        return value.setScale(2, ROUND_HALF_UP);
     }
 }
