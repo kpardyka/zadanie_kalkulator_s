@@ -1,10 +1,12 @@
 package kpardyka.controller;
 
+import kpardyka.error.ErrorData;
 import kpardyka.model.Country;
 import kpardyka.repository.CountryRepository;
 import kpardyka.service.ExchangeRatesService;
 import kpardyka.service.SalaryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +42,8 @@ public class SalaryController {
             BigDecimal netMonthSalary = salaryService.calculateNetSalaryInPLN(country.get(), exchangeRate, valueOf(dailySalary));
             return ResponseEntity.ok(netMonthSalary);
         } else {
-            return ResponseEntity.notFound().build();
+            String url = "http://localhost:8080/country/" + id +"/" + dailySalary;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorData(url,"Country with id = " + id + " not found"));
         }
     }
 
