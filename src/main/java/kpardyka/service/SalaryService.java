@@ -12,6 +12,7 @@ import static java.math.BigDecimal.valueOf;
 public class SalaryService {
 
     private static final int WORK_DAYS_NUMBER = 22;
+    private static final int PRECISION = 8;
 
     public BigDecimal calculateNetSalaryInPLN(Country country, BigDecimal exchangeRate, BigDecimal dailySalary) {
         BigDecimal grossMonthSalary = calculateGrossMonthSalary(dailySalary);
@@ -30,7 +31,7 @@ public class SalaryService {
     }
 
     private BigDecimal calculateGrossSalaryToNetSalary(BigDecimal grossSalaryPercent, BigDecimal grossSalary) {
-        return grossSalary.multiply(valueOf( 100)).divide(grossSalaryPercent, ROUND_HALF_UP);
+        return grossSalary.multiply(valueOf( 100)).divide(grossSalaryPercent, PRECISION,  ROUND_HALF_UP);
     }
 
     private BigDecimal calculateGrossMonthSalary(BigDecimal dailySalary) {

@@ -20,4 +20,7 @@ public class ExchangeRatesTemplate implements ExchangeRatesOperations {
         return restTemplate.getForObject(exchangeRateApiPath, ExchangeRates.class, code);
     }
 
+    public RestTemplate getRestTemplate() {
+        return restTemplate;
+    }
 }

@@ -66,4 +66,8 @@ public class Country {
     public double getCostOfGettingIncome() {
         return costOfGettingIncome;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
