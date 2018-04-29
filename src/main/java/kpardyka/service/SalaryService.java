@@ -3,26 +3,36 @@ package kpardyka.service;
 import kpardyka.model.Country;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
+import static java.math.BigDecimal.*;
+
 @Component
 public class SalaryService {
 
     private static final int WORK_DAYS_NUMBER = 22;
 
-    public double calculateNeSalaryInPLN(Country country, double exchangeRate, double dailySalary) {
-        double grossMonthSalary = calculateGrossMonthSalary(dailySalary);
-        double netMonthSalary = calculateNetMonthSalary(grossMonthSalary, country);
-        return netMonthSalary * exchangeRate;
+    public BigDecimal calculateNetSalaryInPLN(Country country, BigDecimal exchangeRate, BigDecimal dailySalary) {
+        BigDecimal grossMonthSalary = calculateGrossMonthSalary(dailySalary);
+        BigDecimal netMonthSalary = calculateNetMonthSalary(grossMonthSalary, country);
+        BigDecimal netMonthSalaryInPLN = netMonthSalary.multiply(exchangeRate);
+        return netMonthSalaryInPLN.setScale(2, ROUND_HALF_UP);
     }
 
-    private double calculateNetMonthSalary(double grossMonthSalary, Country country) {
+    private BigDecimal calculateNetMonthSalary(BigDecimal grossMonthSalary, Country country) {
         int tax = country.getTax();
-        double costOfGettingIncome = country.getCostOfGettingIncome();
-        int grossSalaryPercent = 100 + tax;
-        double netSalary = (grossMonthSalary - costOfGettingIncome) * 100/ grossSalaryPercent;
-        return Math.round(netSalary);
+        BigDecimal costOfGettingIncome = valueOf(country.getCostOfGettingIncome());
+        BigDecimal grossSalaryPercent = valueOf(100 + tax);
+        BigDecimal grossSalaryWithoutCostOfGettingIncome = grossMonthSalary.subtract(costOfGettingIncome);
+        BigDecimal netSalary = calculateGrossSalaryToNetSalary(grossSalaryPercent, grossSalaryWithoutCostOfGettingIncome);
+        return netSalary;
     }
 
-    private double calculateGrossMonthSalary(double dailySalary) {
-        return dailySalary * WORK_DAYS_NUMBER;
+    private BigDecimal calculateGrossSalaryToNetSalary(BigDecimal grossSalaryPercent, BigDecimal grossSalary) {
+        return grossSalary.multiply(valueOf( 100)).divide(grossSalaryPercent, ROUND_HALF_UP);
+    }
+
+    private BigDecimal calculateGrossMonthSalary(BigDecimal dailySalary) {
+        return dailySalary.multiply(valueOf(WORK_DAYS_NUMBER));
     }
 }

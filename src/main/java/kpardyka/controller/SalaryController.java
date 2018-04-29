@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Optional;
+
+import static java.math.BigDecimal.*;
 
 
 @RestController
@@ -33,8 +36,8 @@ public class SalaryController {
         Optional<Country> country = countryRepository.findById(id);
         if (country.isPresent()) {
             String code = country.get().getCode();
-            double exchangeRate = NBPApi.getExchangeRate(code);
-            double netMonthSalary = salaryService.calculateNeSalaryInPLN(country.get(), exchangeRate, dailySalary);
+            BigDecimal exchangeRate = valueOf(NBPApi.getExchangeRate(code));
+            BigDecimal netMonthSalary = salaryService.calculateNetSalaryInPLN(country.get(), exchangeRate, valueOf(dailySalary));
             return ResponseEntity.ok(netMonthSalary);
         } else {
             return ResponseEntity.notFound().build();
