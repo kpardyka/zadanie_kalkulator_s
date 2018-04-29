@@ -1,31 +1,31 @@
-package kpardyka.exchangeRates;
+package kpardyka.api.model;
 
-class Rate {
+public class Rate {
     private String no;
     private String effectiveDate;
     private Double mid;
 
-    String getNo() {
+    public String getNo() {
         return no;
     }
 
-    Double getMid() {
+    public Double getMid() {
         return mid;
     }
 
-    String getEffectiveDate() {
+    public String getEffectiveDate() {
         return effectiveDate;
     }
 
-    void setNo(String no) {
+    public void setNo(String no) {
         this.no = no;
     }
 
-    void setEffectiveDate(String effectiveDate) {
+    public void setEffectiveDate(String effectiveDate) {
         this.effectiveDate = effectiveDate;
     }
 
-    void setMid(Double mid) {
+    public void setMid(Double mid) {
         this.mid = mid;
     }
 }

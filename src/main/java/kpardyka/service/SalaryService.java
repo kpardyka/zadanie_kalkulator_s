@@ -1,13 +1,14 @@
 package kpardyka.service;
 
 import kpardyka.model.Country;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-import static java.math.BigDecimal.*;
+import static java.math.BigDecimal.ROUND_HALF_UP;
+import static java.math.BigDecimal.valueOf;
 
-@Component
+@Service
 public class SalaryService {
 
     private static final int WORK_DAYS_NUMBER = 22;

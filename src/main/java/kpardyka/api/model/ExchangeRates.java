@@ -1,30 +1,30 @@
-package kpardyka.exchangeRates;
+package kpardyka.api.model;
 
 import java.util.List;
 
-class ExchangeRates {
+public class ExchangeRates {
     private char table;
     private String currency;
     private String code;
     private List<Rate> rates;
 
-    char getTable() {
+    public char getTable() {
         return table;
     }
 
-    String getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    String getCode() {
+    public String getCode() {
         return code;
     }
 
-   List<Rate> getRates() {
+    public List<Rate> getRates() {
         return rates;
     }
 
-    void setRates(List<Rate> rates) {
+    public void setRates(List<Rate> rates) {
         this.rates = rates;
     }
 }
