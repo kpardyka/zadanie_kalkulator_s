@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="demo">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Salary Calculator</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Salary Calculator</h1>
+<div ng-controller="SalaryController as salaryCtrl">
+
+    <!--  Country Form -->
+    <form name="countryForm" ng-submit="onSubmit()">
+
+        <!--  Salary Form -->
+        <fieldset class="form-group">
+            <select ng-model="country" class="form-control" ng-options="country.name for country in countries"
+                    title="Countries">
+                <option value="">Choose a country</option>
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <textarea ng-model="dailySalary" class="form-control" placeholder="Give a daily gross salary"
+                      title="dailyGrossSalary"></textarea>
+        </fieldset>
+        <fieldset class="form-group" ng-show="country.name && dailySalary">
+            <input type="submit" class="btn btn-primary pull-right" value="Submit"/>
+        </fieldset>
+    </form>
+
+    <div>
+        <p ng-show="salary"> Net salary in PLN: {{salary}}</p>
+    </div>
+</div>
+</body>
+</html>

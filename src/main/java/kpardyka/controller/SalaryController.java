@@ -2,14 +2,13 @@ package kpardyka.controller;
 
 import kpardyka.error.ErrorData;
 import kpardyka.model.Country;
-import kpardyka.model.SalaryObject;
 import kpardyka.repository.CountryRepository;
 import kpardyka.service.ExchangeRatesService;
 import kpardyka.service.SalaryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -25,7 +24,7 @@ public class SalaryController {
     private SalaryService salaryService;
     private CountryRepository countryRepository;
 
-    public SalaryController(CountryRepository countryRepository, SalaryService salaryService, ExchangeRatesService exchangeRatesService){
+    public SalaryController(CountryRepository countryRepository, SalaryService salaryService, ExchangeRatesService exchangeRatesService) {
         this.countryRepository = countryRepository;
         this.salaryService = salaryService;
         this.exchangeRatesService = exchangeRatesService;
@@ -36,15 +35,14 @@ public class SalaryController {
         return countryRepository.findAll();
     }
 
-    @PostMapping(value = "/salary")
-    public ResponseEntity calculateSalary(SalaryObject salaryObject) {
-        Long id = salaryObject.getId();
-        Double dailySalary = salaryObject.getDailySalary();
+    @GetMapping(value = "/salary/{id}/{dailySalary}")
+    public ResponseEntity calculateSalary(@PathVariable Long id, @PathVariable Double dailySalary) {
         Optional<Country> country = countryRepository.findById(id);
 
-        if (dailySalary < 0){
+        if (dailySalary < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorData("Daily Salary must be a nonnegative value"));
-        }        if (country.isPresent()) {
+        }
+        if (country.isPresent()) {
             String code = country.get().getCode();
             BigDecimal exchangeRate = valueOf(exchangeRatesService.getExchangeRate(code));
             BigDecimal netMonthSalary = salaryService.calculateNetSalaryInPLN(country.get(), exchangeRate, valueOf(dailySalary));

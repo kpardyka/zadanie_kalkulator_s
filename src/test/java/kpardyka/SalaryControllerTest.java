@@ -3,7 +3,6 @@ package kpardyka;
 import kpardyka.api.operation.ExchangeRatesTemplate;
 import kpardyka.controller.SalaryController;
 import kpardyka.model.Country;
-import kpardyka.model.SalaryObject;
 import kpardyka.repository.CountryRepository;
 import kpardyka.service.ExchangeRatesService;
 import kpardyka.service.SalaryService;
@@ -17,12 +16,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.HttpMethod.GET;
@@ -66,12 +63,12 @@ public class SalaryControllerTest {
 
     @Test
     public void controllerShouldReturnBadRequestWhenSalaryIsLessThanZero() {
-        assertEquals(400, salaryController.calculateSalary(new SalaryObject(1L, -1.0)).getStatusCodeValue());
+        assertEquals(400, salaryController.calculateSalary(1L, -1.0).getStatusCodeValue());
     }
 
     @Test
     public void controllerShouldReturnNotFoundWhenGivenIdIsNotInDatabase() {
-        assertEquals(404, salaryController.calculateSalary(new SalaryObject(3L, 100.0)).getStatusCodeValue());
+        assertEquals(404, salaryController.calculateSalary(3L, 100.0).getStatusCodeValue());
     }
 
     @Test
@@ -79,7 +76,7 @@ public class SalaryControllerTest {
         mockServer.expect(requestTo("http://api.nbp.pl/api/exchangerates/rates/a/eur/"))
                 .andExpect(method(GET))
                 .andRespond(withSuccess(jsonResource("ExchangeRatesAPI"), MediaType.APPLICATION_JSON));
-        assertEquals(200, salaryController.calculateSalary(new SalaryObject(1L, 100.0)).getStatusCodeValue());
+        assertEquals(200, salaryController.calculateSalary(1L, 100.0).getStatusCodeValue());
     }
 
     private Resource jsonResource(String filename) {
